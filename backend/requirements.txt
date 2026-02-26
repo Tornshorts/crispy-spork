@@ -1,0 +1,14 @@
+langchain==0.3.25
+langchain-groq==0.3.2
+langchain-community==0.3.24
+langchain-core==0.3.60
+pypdf==5.1.0
+python-dotenv==1.0.1
+colorama==0.4.6
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+sqlalchemy==2.0.35
+alembic==1.14.0
+pandas==2.2.3
+gunicorn==23.0.0
