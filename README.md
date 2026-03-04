@@ -101,68 +101,6 @@ Open **http://localhost:5173** and upload your M-PESA statement!
 
 ### Frontend → Vercel
 
-1. Push your code to **GitHub**
-2. Go to [vercel.com](https://vercel.com) → **Add New Project** → import your repo
-3. Configure:
-   | Setting            | Value                                    |
-   | ------------------ | ---------------------------------------- |
-   | **Framework**      | Vite                                     |
-   | **Root Directory** | `frontend`                               |
-   | **Build Command**  | `npm run build`                          |
-   | **Output Dir**     | `dist`                                   |
-4. Add **Environment Variable**:
-   ```
-   VITE_API_BASE_URL = https://your-backend-app.onrender.com
-   ```
-5. Click **Deploy** ✅
-
-> **Note:** Every time you update `VITE_API_BASE_URL`, you need to **redeploy** for the change to take effect (env vars are baked in at build time).
-
----
-
-### Backend → Render
-
-1. Push your code to **GitHub**
-
-2. Go to [render.com](https://render.com) → **New Web Service** → connect your repo
-
-3. Configure:
-   | Setting              | Value                                         |
-   | -------------------- | --------------------------------------------- |
-   | **Root Directory**   | `backend`                                     |
-   | **Runtime**          | Python                                        |
-   | **Build Command**    | `pip install -r requirements.txt`             |
-   | **Start Command**    | `gunicorn api:app -w 2 -k uvicorn.workers.UvicornWorker --bind 0.0.0.0:$PORT` |
-
-4. Add **Environment Variable**:
-   ```
-   GROQ_API_KEY = your_groq_api_key_here
-   ```
-
-5. Click **Deploy** ✅
-
-#### ⚠️ Important: Database on Render
-
-The local app uses **SQLite** (`mpesa.db`), but Render's filesystem is **ephemeral** — files get wiped on every deploy. For production you have two options:
-
-| Option | Pros | Cons |
-| ------ | ---- | ---- |
-| **Keep SQLite** (data re-uploaded each session) | Zero config | Data lost on redeploy |
-| **Switch to PostgreSQL** (recommended) | Persistent data | Requires Render PostgreSQL add-on |
-
-**To switch to PostgreSQL:**
-
-1. Create a **PostgreSQL** database on Render (free tier available)
-2. Copy the **Internal Database URL** from Render
-3. Add it as an env var: `DATABASE_URL=postgresql://...`
-4. Update `backend/database/session.py`:
-   ```python
-   import os
-   DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///mpesa.db")
-   ```
-   This way it uses PostgreSQL in production and SQLite locally.
-
----
 
 ## 📝 API Endpoints
 
