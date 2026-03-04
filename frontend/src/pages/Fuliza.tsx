@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import {
-  LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, AreaChart,
+  XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid, Area, AreaChart,
 } from 'recharts';
 import { Landmark, TrendingUp, BarChart3, Percent } from 'lucide-react';
 import { api, type FulizaData } from '../lib/api';
@@ -72,8 +72,8 @@ export default function Fuliza() {
             />
             <YAxis stroke="var(--color-text-secondary)" fontSize={12} tickFormatter={(v: number) => `${v}`} />
             <Tooltip
-              formatter={(v: number) => [kes(v), 'Fuliza Used']}
-              labelFormatter={(l: string) => fmtDate(l)}
+              formatter={(v: number | undefined) => [kes(v ?? 0), 'Fuliza Used']}
+              labelFormatter={(l) => fmtDate(String(l))}
               contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 10, fontSize: 13 }}
             />
             <Area type="monotone" dataKey="value" stroke="#f59e0b" fill="url(#fulizaGrad)" strokeWidth={2} />

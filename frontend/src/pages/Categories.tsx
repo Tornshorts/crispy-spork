@@ -55,10 +55,10 @@ export default function Categories() {
               />
               <YAxis stroke="var(--color-text-secondary)" fontSize={12} tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}K`} />
               <Tooltip
-                formatter={(v: number) => [kes(v), 'Amount']}
+                formatter={(v: number | undefined) => [kes(v ?? 0), 'Amount']}
                 contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 10, fontSize: 13 }}
               />
-              <Bar dataKey="amount" radius={[6, 6, 0, 0]} cursor="pointer" onClick={(d: { name: string }) => setSelected(d.name)}>
+              <Bar dataKey="amount" radius={[6, 6, 0, 0]} cursor="pointer" onClick={(d: { name?: string }) => d.name && setSelected(d.name)}>
                 {chartData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i % COLORS.length]} />
                 ))}
