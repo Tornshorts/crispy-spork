@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { Upload, CheckCircle, XCircle, FileText } from 'lucide-react';
+import { Upload, CheckCircle, XCircle } from 'lucide-react';
 import { api, type UploadResult } from '../lib/api';
 
 export default function UploadPage() {

@@ -4,7 +4,7 @@ import {
 } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer,
-  LineChart, Line, CartesianGrid,
+  CartesianGrid,
 } from 'recharts';
 import { api, type Summary, type CategoryRow, type TopExpense } from '../lib/api';
 import { kes, fmtDate } from '../lib/format';
@@ -79,7 +79,7 @@ export default function Dashboard() {
               <XAxis type="number" tickFormatter={(v: number) => `${(v / 1000).toFixed(0)}K`} stroke="var(--color-text-secondary)" fontSize={12} />
               <YAxis type="category" dataKey="name" width={110} stroke="var(--color-text-secondary)" fontSize={11} />
               <Tooltip
-                formatter={(v: number) => [kes(v), 'Amount']}
+                formatter={(v: number | undefined) => [kes(v ?? 0), 'Amount']}
                 contentStyle={{ background: 'var(--color-surface)', border: '1px solid var(--color-border)', borderRadius: 10, fontSize: 13 }}
               />
               <Bar dataKey="amount" fill="#10b981" radius={[0, 6, 6, 0]} />

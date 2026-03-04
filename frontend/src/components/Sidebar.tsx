@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard, ArrowLeftRight, PieChart, Landmark,
-  Upload, MessageSquare, Menu, X, Sun, Moon,
+  Upload, MessageSquare, Menu, Sun, Moon,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useTheme } from '../context/ThemeContext';
