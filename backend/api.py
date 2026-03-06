@@ -8,7 +8,7 @@ import os
 import tempfile
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI, File, UploadFile, Query, HTTPException
+from fastapi import FastAPI, File, UploadFile, Query, HTTPException, Form
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -62,7 +62,10 @@ class ChatResponse(BaseModel):
 
 
 @app.post("/api/upload")
-async def upload_statement(file: UploadFile = File(...)):
+async def upload_statement(
+    file: UploadFile = File(...),
+    password: str = Form(default=""),
+):
     """Upload an M-PESA PDF or CSV statement and import transactions."""
     ext = os.path.splitext(file.filename or "")[1].lower()
     if ext not in (".pdf", ".csv"):
@@ -75,7 +78,7 @@ async def upload_statement(file: UploadFile = File(...)):
         tmp_path = tmp.name
 
     try:
-        raw = load_statements(tmp_path)
+        raw = load_statements(tmp_path, password=password or None)
         df = clean_mpesa_text(raw)
         df = consolidate_fuliza(df)
 
@@ -94,6 +97,16 @@ async def upload_statement(file: UploadFile = File(...)):
             "message": f"Successfully processed {file.filename}. "
                        f"{imported} new transactions imported, {skipped} duplicates skipped.",
         }
+    except ValueError as e:
+        raise HTTPException(status_code=401, detail=str(e))
+    except Exception as e:
+        err_msg = str(e)
+        if "not been decrypted" in err_msg or "encrypted" in err_msg.lower():
+            raise HTTPException(
+                status_code=422,
+                detail="This PDF is password-protected. Please provide your M-PESA statement password (usually your national ID)."
+            )
+        raise HTTPException(status_code=500, detail=f"Failed to process file: {err_msg}")
     finally:
         os.unlink(tmp_path)
 

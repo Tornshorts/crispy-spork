@@ -21,17 +21,17 @@ export default function Fuliza() {
   if (!data) return <p>No Fuliza data available.</p>;
 
   const kpis = [
-    { label: 'Fuliza Used', value: kes(data.fuliza_used_total), icon: Landmark, cls: 'fuliza' },
-    { label: 'Times Used', value: data.fuliza_used_count.toString(), icon: BarChart3, cls: 'outflow' },
-    { label: 'Fuliza Repaid', value: kes(data.fuliza_repaid_total), icon: TrendingUp, cls: 'repaid' },
-    { label: 'Fuliza / Inflow Ratio', value: `${(data.fuliza_ratio * 100).toFixed(2)}%`, icon: Percent, cls: 'net' },
+    { label: 'Fuliza Borrowed', value: kes(data.fuliza_used_total), icon: Landmark, cls: 'fuliza' },
+    { label: 'Times Borrowed', value: data.fuliza_used_count.toString(), icon: BarChart3, cls: 'outflow' },
+    { label: 'Fuliza Paid Back', value: kes(data.fuliza_repaid_total), icon: TrendingUp, cls: 'repaid' },
+    { label: 'Fuliza / Income Ratio', value: `${(data.fuliza_ratio * 100).toFixed(2)}%`, icon: Percent, cls: 'net' },
   ];
 
   return (
     <>
       <div className="page-header">
-        <h2>Fuliza Analytics</h2>
-        <p>Track your Fuliza (overdraft) usage over time</p>
+        <h2>Fuliza Tracker</h2>
+        <p>This section analyzes your Fuliza (overdraft) borrowing patterns — how much you borrow and when</p>
       </div>
 
       {/* KPIs */}

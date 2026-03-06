@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
-import { Upload, CheckCircle, XCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { Upload, CheckCircle, XCircle, Lock } from 'lucide-react';
 import { api, type UploadResult } from '../lib/api';
 
 export default function UploadPage() {
@@ -7,19 +8,54 @@ export default function UploadPage() {
   const [uploading, setUploading] = useState(false);
   const [result, setResult] = useState<UploadResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [needsPassword, setNeedsPassword] = useState(false);
+  const [password, setPassword] = useState('');
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
 
-  const handleFile = async (file: File) => {
+  const handleFile = async (file: File, pwd?: string) => {
     setUploading(true);
     setResult(null);
     setError(null);
     try {
-      const res = await api.upload(file);
+      const res = await api.upload(file, pwd);
       setResult(res);
+      setNeedsPassword(false);
+      setPendingFile(null);
+      setPassword('');
+      // Redirect to dashboard after a brief delay
+      setTimeout(() => navigate('/'), 1500);
     } catch (e: any) {
-      setError(e.message || 'Upload failed');
+      let msg = '';
+      try {
+        const parsed = JSON.parse(e.message);
+        msg = parsed.detail || e.message;
+      } catch {
+        msg = e.message || 'Upload failed';
+      }
+
+      // If the server says it needs a password (422) or wrong password (401)
+      if (
+        msg.toLowerCase().includes('password') ||
+        msg.toLowerCase().includes('decrypt') ||
+        msg.toLowerCase().includes('encrypted')
+      ) {
+        setNeedsPassword(true);
+        setPendingFile(file);
+        setError(msg);
+      } else {
+        setError(msg);
+      }
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handlePasswordSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (pendingFile && password) {
+      handleFile(pendingFile, password);
     }
   };
 
@@ -76,6 +112,68 @@ export default function UploadPage() {
           onChange={onFileSelect}
         />
 
+        {/* Password prompt for encrypted PDFs */}
+        {needsPassword && (
+          <form
+            onSubmit={handlePasswordSubmit}
+            style={{
+              marginTop: 24,
+              padding: 20,
+              borderRadius: 12,
+              background: 'rgba(251, 191, 36, 0.08)',
+              border: '1px solid rgba(251, 191, 36, 0.3)',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12 }}>
+              <Lock size={20} style={{ color: '#f59e0b' }} />
+              <span style={{ fontWeight: 700, color: '#f59e0b' }}>Password Required</span>
+            </div>
+            <p style={{ fontSize: 14, marginBottom: 14, color: 'var(--color-text-secondary)' }}>
+              This M-PESA statement is encrypted. Enter your password to unlock it.
+              <br />
+              <span style={{ fontSize: 12, opacity: 0.7 }}>
+                (Usually your national ID number)
+              </span>
+            </p>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="Enter statement password"
+                autoFocus
+                style={{
+                  flex: 1,
+                  padding: '10px 14px',
+                  borderRadius: 8,
+                  border: '1px solid var(--color-border)',
+                  background: 'var(--color-bg)',
+                  color: 'var(--color-text)',
+                  fontSize: 14,
+                  outline: 'none',
+                }}
+              />
+              <button
+                type="submit"
+                disabled={!password || uploading}
+                style={{
+                  padding: '10px 20px',
+                  borderRadius: 8,
+                  background: 'var(--color-primary)',
+                  color: '#fff',
+                  border: 'none',
+                  fontWeight: 600,
+                  fontSize: 14,
+                  cursor: password ? 'pointer' : 'not-allowed',
+                  opacity: password ? 1 : 0.5,
+                }}
+              >
+                {uploading ? 'Unlocking…' : 'Unlock & Import'}
+              </button>
+            </div>
+          </form>
+        )}
+
         {/* Result */}
         {result && (
           <div style={{
@@ -97,8 +195,8 @@ export default function UploadPage() {
           </div>
         )}
 
-        {/* Error */}
-        {error && (
+        {/* Error (only show if NOT the password prompt) */}
+        {error && !needsPassword && (
           <div style={{
             marginTop: 24,
             padding: 20,

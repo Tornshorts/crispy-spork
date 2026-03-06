@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import Sidebar from './components/Sidebar';
 import Dashboard from './pages/Dashboard';
@@ -9,8 +9,13 @@ import UploadPage from './pages/Upload';
 import Chat from './pages/Chat';
 import Login from './pages/Login';
 import { useState } from 'react';
+import { Upload } from 'lucide-react';
 
 function AppShell() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const showFab = location.pathname !== '/upload';
+
   return (
     <div className="app-layout">
       <Sidebar />
@@ -25,6 +30,17 @@ function AppShell() {
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </main>
+
+      {/* Mobile floating upload button */}
+      {showFab && (
+        <button
+          className="mobile-fab"
+          onClick={() => navigate('/upload')}
+          aria-label="Upload Statement"
+        >
+          <Upload size={22} />
+        </button>
+      )}
     </div>
   );
 }

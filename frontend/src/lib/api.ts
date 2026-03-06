@@ -87,9 +87,10 @@ export const api = {
 
   getFuliza: () => request<FulizaData>('/api/fuliza'),
 
-  upload: async (file: File): Promise<UploadResult> => {
+  upload: async (file: File, password?: string): Promise<UploadResult> => {
     const fd = new FormData();
     fd.append('file', file);
+    if (password) fd.append('password', password);
     return request<UploadResult>('/api/upload', { method: 'POST', body: fd });
   },
 

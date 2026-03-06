@@ -20,6 +20,21 @@ export default function Categories() {
     return <div className="loading-center"><div className="spinner" /></div>;
   }
 
+  if (categories.length === 0) {
+    return (
+      <>
+        <div className="page-header">
+          <h2>Spending Categories</h2>
+          <p>We automatically categorize your M-PESA transactions</p>
+        </div>
+        <div className="card" style={{ textAlign: 'center', padding: '60px 32px', maxWidth: 500, margin: '40px auto' }}>
+          <p style={{ fontSize: 16, fontWeight: 600, marginBottom: 8 }}>No categories yet</p>
+          <p style={{ fontSize: 14, color: 'var(--color-text-secondary)' }}>Upload your M-PESA statement to see your spending by category.</p>
+        </div>
+      </>
+    );
+  }
+
   const chartData = categories.map((c) => ({
     name: c.type,
     amount: Math.abs(c.total),
@@ -33,8 +48,8 @@ export default function Categories() {
   return (
     <>
       <div className="page-header">
-        <h2>Categories</h2>
-        <p>Spending breakdown by transaction type</p>
+        <h2>Spending Categories</h2>
+        <p>We automatically categorize your M-PESA transactions (Food, Transport, Bills, etc.)</p>
       </div>
 
       <div className="chart-grid">

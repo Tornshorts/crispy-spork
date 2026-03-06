@@ -9,10 +9,10 @@ import { useTheme } from '../context/ThemeContext';
 const links = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard },
   { to: '/transactions', label: 'Transactions', icon: ArrowLeftRight },
-  { to: '/categories', label: 'Categories', icon: PieChart },
-  { to: '/fuliza', label: 'Fuliza', icon: Landmark },
-  { to: '/upload', label: 'Upload', icon: Upload },
-  { to: '/chat', label: 'AI Chat', icon: MessageSquare },
+  { to: '/categories', label: 'Spending Categories', icon: PieChart },
+  { to: '/fuliza', label: 'Fuliza Tracker', icon: Landmark },
+  { to: '/upload', label: 'Upload Statement', icon: Upload },
+  { to: '/chat', label: 'Ask AI', icon: MessageSquare },
 ];
 
 export default function Sidebar() {

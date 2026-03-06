@@ -64,8 +64,8 @@ export default function Chat() {
     <div className="chat-container">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
         <div className="page-header" style={{ marginBottom: 0 }}>
-          <h2>AI Finance Chat</h2>
-          <p>Ask me anything about your M-PESA finances</p>
+          <h2>Ask AI About Your Spending</h2>
+          <p>Get insights and advice from your financial data</p>
         </div>
         <button
           className="btn btn-secondary"
